@@ -26,14 +26,14 @@ class Argument:
 @dataclass
 class ArgumentGraph:
     arguments: List[Argument]
-    attack_relations: List[Attack]
+    attacks: List[Attack]
 
     @classmethod
     def from_json(cls, js: Dict) -> Self:
         return cls(
             # Sorting the array because list order is not guaranteed in json parsing
-            arguments=[Argument(*x) for x in js["Arguments"].items()],
-            attack_relations=[Attack(*x) for x in js["Attack Relations"]],
+            arguments=[Argument(int(i), str(v)) for i, v in js["Arguments"].items()],
+            attacks=[Attack(int(e), int(r)) for e, r in js["Attack Relations"]],
         )
 
 

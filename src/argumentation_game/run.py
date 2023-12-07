@@ -27,7 +27,7 @@ def parse_arguments(args: List[str]) -> Dict:
 
 def run(Arguments: ArgumentGraph):
     print(Arguments.arguments)
-    print(Arguments.attack_relations)
+    print(Arguments.attacks)
 
 
 def main(args: List[str]) -> None:
