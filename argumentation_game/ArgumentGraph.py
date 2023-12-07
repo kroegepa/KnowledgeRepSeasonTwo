@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import marshmallow_dataclass
 
 @dataclass
-class ArgumentGraph(Schema):
+class ArgumentGraph():
     #Class has two main attributes
     #List of arguments ["sth","sth else"], their index corresponds to their number
     #List of tuples of attacks [(0,1)...]
