@@ -6,6 +6,8 @@ from typing import Dict, List
 
 from argumentation_game.argument_graph import parse_json, ArgumentGraph
 from argumentation_game.recursive_shenanigans import recursive_boogaloo
+from argumentation_game.labeling import Label
+
 
 def parse_arguments(args: List[str]) -> Dict:
     parser = argparse.ArgumentParser(
@@ -28,13 +30,17 @@ def parse_arguments(args: List[str]) -> Dict:
 def run(Arguments: ArgumentGraph):
     print(Arguments.arguments)
     print(Arguments.attacks)
-    print()
-    Arguments.calc_attackers()
-    label = [2,0,0,0,0,0,0]
-    print(Arguments.arguments[0].attackers)
-    label = recursive_boogaloo(Arguments,label,0)
-    print(label)
-
+    labeling = [
+        Label.Out,
+        Label.Undecided,
+        Label.Undecided,
+        Label.Undecided,
+        Label.Undecided,
+        Label.Undecided,
+        Label.Undecided,
+    ]
+    labeling = recursive_boogaloo(Arguments, labeling, 0)
+    print(labeling)
 
 
 def main(args: List[str]) -> None:

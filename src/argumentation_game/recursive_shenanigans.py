@@ -1,21 +1,21 @@
-from argumentation_game.argument_graph import ArgumentGraph
+from argumentation_game.argument_graph import Argument, ArgumentGraph
+from argumentation_game.labeling import Label
+
 from typing import List, Optional
 
 
-# Labeling is list of integers
-# 1 is in 2 is out 0 undecided
 def recursive_boogaloo(
-    argument_graph: ArgumentGraph, labeling: List[int], current_node: int
-) -> Optional[List[int]]:
-    if labeling[current_node] == 1:
-        changed_flag = 0
+    argument_graph: ArgumentGraph, labeling: List[Label], current_node: int
+) -> Optional[List[Label]]:
+    if labeling[current_node] == Label.In:
+        changed = False
         for attacker in argument_graph.arguments[current_node].attackers:
-            if labeling[attacker] == 1:
+            if labeling[attacker] == Label.In:
                 return None
-            elif labeling[attacker] == 0:
-                labeling[attacker] = 2
-                changed_flag = 1
-        if changed_flag == 0:
+            elif labeling[attacker] == Label.Undecided:
+                labeling[attacker] = Label.Out
+                changed = True
+        if changed is False:
             return labeling
         for attacker in argument_graph.arguments[current_node].attackers:
             labeling_ = recursive_boogaloo(argument_graph, labeling, attacker)
@@ -26,20 +26,30 @@ def recursive_boogaloo(
 
         return labeling
 
-    # If current_node is out
-    elif labeling[current_node] == 2:
+    elif labeling[current_node] == Label.Out:
         for attacker in argument_graph.arguments[current_node].attackers:
             temp_labeling = labeling
-            if labeling[attacker] == 2:
+            if labeling[attacker] == Label.Out:
                 temp_labeling = None
-            elif labeling[attacker] == 0:
-                temp_labeling[attacker] = 1
+            elif labeling[attacker] == Label.Undecided:
+                temp_labeling[attacker] = Label.In
                 temp_labeling = recursive_boogaloo(
                     argument_graph, temp_labeling, attacker
                 )
-            elif labeling[attacker] == 1:
+            elif labeling[attacker] == Label.In:
                 return labeling
 
             if temp_labeling is not None:
                 return temp_labeling
     return None
+
+
+def try_admissability(
+    argument_graph: ArgumentGraph, argument: int | Argument, label: Label
+) -> Optional[List[Label]]:
+    if isinstance(argument, Argument):
+        argument = argument.index
+
+    initial_labels = [Label.Undecided for _ in argument_graph.arguments]
+    initial_labels[argument] = label
+    return recursive_boogaloo(argument_graph, initial_labels, argument)
