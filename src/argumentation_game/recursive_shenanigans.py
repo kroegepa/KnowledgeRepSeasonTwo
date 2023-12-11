@@ -18,9 +18,12 @@ def recursive_boogaloo(
         if changed_flag == 0:
             return labeling
         for attacker in argument_graph.arguments[current_node].attackers:
-            labeling = recursive_boogaloo(argument_graph, labeling, attacker)
-            if labeling is None:
+            labeling_ = recursive_boogaloo(argument_graph, labeling, attacker)
+            if labeling_ is None:
                 return None
+            else:
+                labeling = labeling_
+
         return labeling
 
     # If current_node is out
