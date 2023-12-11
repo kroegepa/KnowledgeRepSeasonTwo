@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
-from typing import Dict, List, Self
+from typing import Dict, List
 from numbers import Integral
 
 
@@ -30,22 +32,13 @@ class ArgumentGraph:
     attacks: List[Attack]
 
     @classmethod
-    def from_json(cls, js: Dict) -> Self:
-        return cls(
-            # Sorting the array because list order is not guaranteed in json parsing
-            arguments=[Argument(int(i), str(v),None) for i, v in js["Arguments"].items()],
-            attacks=[Attack(int(e), int(r)) for e, r in js["Attack Relations"]],
-        )
-    def calc_attackers(self):
-        for argument in self.arguments:
-            attacker_list = []
-            for attack in self.attacks:
-                if argument.index == attack.attackee:
-                    attacker_list.append(attack.attacker)
-            argument.attackers = attacker_list
-
-
-
+    def from_json(cls, js: Dict) -> ArgumentGraph:
+        attacks = [Attack(int(r), int(e)) for r, e in js["Attack Relations"]]
+        arguments = [
+            Argument(int(i), str(v), [a.attacker for a in attacks if i == a.attackee])
+            for i, v in js["Arguments"].items()
+        ]
+        return cls(sorted(arguments, key=lambda x: x.index), attacks)
 
 
 def parse_json(json: Dict) -> ArgumentGraph:
