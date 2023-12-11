@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "f169e3c96678042df75090d6b37f9adae634f38f792be18c3e8b54b4f0b07156"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.11"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "argumentation-game": {
+            "editable": true,
+            "file": "."
+        }
+    },
+    "develop": {}
+}
