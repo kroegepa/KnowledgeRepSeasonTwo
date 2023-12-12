@@ -1,6 +1,8 @@
 from typing import Dict, Iterable, List, NoReturn, Optional, Set
 
 from argumentation_game.argument_graph import Argument, ArgumentGraph
+from argumentation_game.labeling import Label
+from argumentation_game.recursive_shenanigans import try_admissability
 
 
 class InvalidArgument(Exception):
@@ -46,11 +48,13 @@ class Game:
     argument_graph: ArgumentGraph
     outputed_arguments: Set[Argument]
     inputed_arguments: Set[Argument]
+    labeling: Optional[List[Label]]
 
     def __init__(self, argument_graph: ArgumentGraph) -> None:
         self.argument_graph = argument_graph
         self.outputed_arguments = set()
         self.inputed_arguments = set()
+        self.labeling = None
 
     @property
     def arguments(self) -> List[Argument]:
@@ -118,18 +122,21 @@ class Game:
         attackers = {self.arguments_map[a] for a in argument.attackers}
         availabe = attackers - self.inputed_arguments
         for atacker in availabe:
-            self.print_replied_argument(atacker)
-            return atacker
+            if self.labeling is None or self.labeling[atacker.index] == Label.In:
+                self.print_replied_argument(atacker)
+                return atacker
 
+        assert not availabe
         self.end_game(GameMessages.END_GAME_NO_ARGS_PROPONENT)
 
-    def play_game(self, initial_argument: Argument) -> NoReturn:
-        if not initial_argument in self.argument_graph.arguments:
-            self.end_game(f"{initial_argument} is not a argument from the passed graph")
+    def play_game(self, init_argument: Argument) -> NoReturn:
+        if not init_argument in self.argument_graph.arguments:
+            self.end_game(f"{init_argument} is not a argument from the passed graph")
         self.print_arguments(self.arguments)
-        print(f"Starting game with {initial_argument}\n")
+        print(f"Starting game with {init_argument}\n")
+        self.labeling = try_admissability(self.argument_graph, init_argument, Label.In)
 
-        self.outputed_arguments.add(initial_argument)
+        self.outputed_arguments.add(init_argument)
         while True:
             selected_argument = self.choose_attacking_argument()
             self.inputed_arguments.add(selected_argument)
