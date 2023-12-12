@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Dict, Iterable, List, Optional, Set, NoReturn
+from typing import Dict, Iterable, List, NoReturn, Optional, Set
 
-from argumentation_game.argument_graph import ArgumentGraph, Argument
+from argumentation_game.argument_graph import Argument, ArgumentGraph
 
 
 class InvalidArgument(Exception):
@@ -34,6 +34,8 @@ class GameMessages(Enum):
         "Game ends because proponent is left with no arguments to use\nOPPONENT WINS"
     )
 
+    QUIT_GAME = "Quitting game upon user request ..."
+
     INVALID_ARGUMENT = "ERROR: The argument key provided is not among the possible keys"
 
     NON_EXISTING_ARGUMENT = "ERROR: The argument key provided doesn't exist"
@@ -57,7 +59,7 @@ class Game:
 
     @property
     def arguments_map(self) -> Dict[int, Argument]:
-        return {i: arg for i, arg in enumerate(self.argument_graph.arguments)}
+        return {arg.index: arg for arg in self.argument_graph.arguments}
 
     def print_arguments(self, arguments: Iterable[Argument]):
         for argument in arguments:
@@ -89,8 +91,7 @@ class Game:
             try:
                 user_input = input(GameMessages.CHOOSE_ARGUMENT.value)
                 if user_input.lower() in EXIT_KEYS:
-                    print("Quitting the game ...")
-                    exit()
+                    self.end_game(GameMessages.QUIT_GAME.value)
                 argument = self.arguments_map.get(int(user_input))
                 argument = self.validate_argument(argument, arguments)
                 self.print_selected_argument(argument)
@@ -108,7 +109,7 @@ class Game:
     def get_arguments_available_to_opponent(self) -> Set[Argument]:
         arguments = set()
         for outputed in self.outputed_arguments:
-            arguments |= outputed.attackers
+            arguments |= {self.arguments_map[a] for a in outputed.attackers}
         arguments -= self.inputed_arguments - self.outputed_arguments
         if not arguments:
             self.end_game(GameMessages.END_GAME_NO_ARGS_OPPONENT.value)
