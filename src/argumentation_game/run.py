@@ -1,12 +1,10 @@
-import sys
 import json
 import argparse
 
 from typing import Dict, List
 
 from argumentation_game.argument_graph import parse_json, ArgumentGraph
-from argumentation_game.recursive_shenanigans import recursive_boogaloo
-from argumentation_game.labeling import Label
+from argumentation_game.game import Game
 
 
 def parse_arguments(args: List[str]) -> Dict:
@@ -21,26 +19,14 @@ def parse_arguments(args: List[str]) -> Dict:
     arguments = parser.parse_args(args)
 
     if not arguments.json:
-        parser.print_usage()
-        return sys.exit(1)
+        parser.exit(1, "Could not read the inputted file")
 
     return json.load(arguments.json)
 
 
-def run(Arguments: ArgumentGraph):
-    print(Arguments.arguments)
-    print(Arguments.attacks)
-    labeling = [
-        Label.Out,
-        Label.Undecided,
-        Label.Undecided,
-        Label.Undecided,
-        Label.Undecided,
-        Label.Undecided,
-        Label.Undecided,
-    ]
-    labeling = recursive_boogaloo(Arguments, labeling, 0)
-    print(labeling)
+def run(argument_graph: ArgumentGraph):
+    game = Game(argument_graph)
+    game.play_game()
 
 
 def main(args: List[str]) -> None:
