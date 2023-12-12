@@ -54,6 +54,7 @@ class TestExamples:
         ret = try_admissability(self.exampes[data], node, label)
         assert ret is not None
         assert self.exampes[data].is_admissable(ret)
+        assert ret[node] == label
         assert all(isinstance(l, Label) for l in ret)
 
     @pytest.mark.parametrize(
