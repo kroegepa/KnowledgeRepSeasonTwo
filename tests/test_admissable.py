@@ -1,7 +1,5 @@
 import pytest
-from argumentation_game.labeling import Label
-from argumentation_game.argument_graph import ArgumentGraph
-from argumentation_game.recursive_shenanigans import try_admissability
+from argumentation_game import Label, ArgumentGraph, try_admissability
 
 from .helpers import DATA_PATH, load_json
 

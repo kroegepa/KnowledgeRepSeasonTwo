@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Dict, Iterable, List, NoReturn, Optional, Set
 
 from argumentation_game.argument_graph import Argument, ArgumentGraph
@@ -15,7 +14,7 @@ class NonExistingArgument(Exception):
 EXIT_KEYS = ("q", "quit", ":q", "exit", "exit()")
 
 
-class GameMessages(Enum):
+class GameMessages:
     CHOOSE_INITIAL_ARGUMENT = (
         "\nChoose one argument among the following to START the game\n"
     )
@@ -62,9 +61,7 @@ class Game:
         return {arg.index: arg for arg in self.argument_graph.arguments}
 
     def print_arguments(self, arguments: Iterable[Argument]):
-        for argument in arguments:
-            print(argument)
-        print("\n")
+        print("\n".join(str(arg) for arg in arguments), "\n")
 
     def print_selected_argument(self, argument: Argument) -> None:
         print(f"The selected argument is {str(argument)}\n")
@@ -86,22 +83,22 @@ class Game:
     def get_argument_from_input(self, arguments: Iterable[Argument]) -> Argument:
         while True:
             try:
-                user_input = input(GameMessages.CHOOSE_ARGUMENT.value)
+                user_input = input(GameMessages.CHOOSE_ARGUMENT)
                 if user_input.lower() in EXIT_KEYS:
-                    self.end_game(GameMessages.QUIT_GAME.value)
+                    self.end_game(GameMessages.QUIT_GAME)
                 argument = self.arguments_map.get(int(user_input))
                 argument = self.validate_argument(argument, arguments)
                 self.print_selected_argument(argument)
                 return argument
 
             except ValueError:
-                print(GameMessages.INVALID_KEY.value)
+                print(GameMessages.INVALID_KEY)
 
             except NonExistingArgument:
-                print(GameMessages.NON_EXISTING_ARGUMENT.value)
+                print(GameMessages.NON_EXISTING_ARGUMENT)
 
             except InvalidArgument:
-                print(GameMessages.INVALID_ARGUMENT.value)
+                print(GameMessages.INVALID_ARGUMENT)
 
     def get_arguments_available_to_opponent(self) -> Set[Argument]:
         arguments = set()
@@ -109,11 +106,11 @@ class Game:
             arguments |= {self.arguments_map[a] for a in outputed.attackers}
         arguments -= self.inputed_arguments - self.outputed_arguments
         if not arguments:
-            self.end_game(GameMessages.END_GAME_NO_ARGS_OPPONENT.value)
+            self.end_game(GameMessages.END_GAME_NO_ARGS_OPPONENT)
         return arguments
 
     def choose_attacking_argument(self) -> Argument:
-        print(GameMessages.CHOOSE_ATTACKING_ARGUMENT.value)
+        print(GameMessages.CHOOSE_ATTACKING_ARGUMENT)
         self.print_arguments(self.get_arguments_available_to_opponent())
         return self.get_argument_from_input(self.get_arguments_available_to_opponent())
 
@@ -124,9 +121,9 @@ class Game:
             self.print_replied_argument(atacker)
             return atacker
 
-        self.end_game(GameMessages.END_GAME_NO_ARGS_PROPONENT.value)
+        self.end_game(GameMessages.END_GAME_NO_ARGS_PROPONENT)
 
-    def play_game(self, initial_argument: Argument) -> None:
+    def play_game(self, initial_argument: Argument) -> NoReturn:
         if not initial_argument in self.argument_graph.arguments:
             self.end_game(f"{initial_argument} is not a argument from the passed graph")
         self.print_arguments(self.arguments)
@@ -138,7 +135,7 @@ class Game:
             self.inputed_arguments.add(selected_argument)
             replied_argument = self.choose_replied_argument(selected_argument)
             self.outputed_arguments.add(replied_argument)
-            print(GameMessages.PLAYING_NEXT_ROUND.value)
+            print(GameMessages.PLAYING_NEXT_ROUND)
 
     def end_game(self, msg: str) -> NoReturn:
         print(msg)

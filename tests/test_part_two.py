@@ -1,6 +1,4 @@
-from argumentation_game.labeling import Label
-from argumentation_game.argument_graph import ArgumentGraph
-from argumentation_game.recursive_shenanigans import is_in_admissable_labeling
+from argumentation_game import Label, ArgumentGraph, is_in_admissable_labeling
 
 from .helpers import DATA_PATH, load_json
 

@@ -1,5 +1,5 @@
 from argumentation_game.argument_graph import Argument, ArgumentGraph
-from argumentation_game.labeling import Label
+from argumentation_game.labeling import DecidedLabel, Label
 
 from typing import List, Optional
 
@@ -45,7 +45,7 @@ def recursive_boogaloo(
 
 
 def try_admissability(
-    argument_graph: ArgumentGraph, argument: int | Argument, label: Label
+    argument_graph: ArgumentGraph, argument: int | Argument, label: DecidedLabel
 ) -> Optional[List[Label]]:
     if isinstance(argument, Argument):
         argument = argument.index
@@ -56,6 +56,6 @@ def try_admissability(
 
 
 def is_in_admissable_labeling(
-    argument_graph: ArgumentGraph, argument: int | Argument, label: Label
+    argument_graph: ArgumentGraph, argument: int | Argument, label: DecidedLabel
 ) -> bool:
     return try_admissability(argument_graph, argument, label) is not None
