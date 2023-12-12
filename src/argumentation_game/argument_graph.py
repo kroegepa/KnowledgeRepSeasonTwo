@@ -1,62 +1,38 @@
-from __future__ import annotations
+from collections import namedtuple
+from typing import Dict, List, Self
 
-from dataclasses import dataclass, field
-from numbers import Integral
-from typing import Dict, List, Optional, Self, Set
+from argumentation_game.argument import Argument
 
-
-@dataclass
-class Attack:
-    attackee: int
-    attacker: int
+AttackRelation = namedtuple("AttackRelation", field_names=["attacker", "attackee"])
 
 
-@dataclass
-class Argument:
-    index: int
-    text: str
-    attacks_to: Set[Optional[Argument]] = field(default_factory=set)
-    is_attacked_by: Set[Optional[Argument]] = field(default_factory=set)
-
-    def __eq__(self, __o: object) -> bool:
-        if isinstance(__o, Argument):
-            return self.index == __o.index
-        elif isinstance(__o, Integral):
-            return self.index == __o
-        return NotImplemented
-
-
-@dataclass
 class ArgumentGraph:
     arguments: List[Argument]
-    attacks: List[Attack]
+    attack_relations: List[AttackRelation]
+    arguments_map: Dict[int, Argument]
+
+    def __init__(
+        self, arguments: List[Argument], attack_relations: List[AttackRelation]
+    ) -> None:
+        self.arguments = arguments
+        self.attack_relations = attack_relations
+        self.arguments_map = {argument.index: argument for argument in self.arguments}
+        self.add_relations_to_arguments()
 
     @classmethod
     def from_json(cls, js: Dict) -> Self:
-        # Sorting the array because list order is not guaranteed in json parsing
-        arguments = [Argument(int(i), str(v)) for i, v in js["Arguments"].items()]
-        attacks = [Attack(int(e), int(r)) for e, r in js["Attack Relations"]]
-        ArgumentGraph.add_attackers_to_arguments(arguments)
+        return cls(
+            [Argument(int(i), str(v)) for i, v in js["Arguments"].items()],
+            [AttackRelation(int(e), int(r)) for e, r in js["Attack Relations"]],
+        )
 
-        return cls(arguments=arguments, attacks=attacks)
-
-    @staticmethod
-    def add_attackers_to_arguments(
-        arguments: List[Argument], attacks: List[Attack]
-    ) -> None:
-        arguments_map = ArgumentGraph.create_arguments_mapping(arguments)
-
-    @staticmethod
-    def create_arguments_mapping(
-        arguments: List[Argument],
-    ) -> Dict[int, Argument]:
-        return {argument.index: argument for argument in arguments}
-
-    @staticmethod
-    def find_attackees(argument: Argument, attack_relations: List[Attack]) -> None:
-        for attacker, attackee in attack_relations:
-            if attacker == argument.index:
-                argument.attacks_to.add(attackee)
+    def add_relations_to_arguments(self) -> None:
+        for argument in self.arguments:
+            for attacker, attackee in self.attack_relations:
+                if argument == attacker:
+                    argument.attacks_to.add(self.arguments_map[attackee])
+                elif argument == attackee:
+                    argument.is_attacked_by.add(self.arguments_map[attacker])
 
 
 def parse_json(json: Dict) -> ArgumentGraph:

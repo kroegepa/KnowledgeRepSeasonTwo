@@ -4,6 +4,7 @@ import sys
 from typing import Dict, List
 
 from argumentation_game.argument_graph import ArgumentGraph, parse_json
+from argumentation_game.game import Game
 
 
 def parse_arguments(args: List[str]) -> Dict:
@@ -15,9 +16,6 @@ def parse_arguments(args: List[str]) -> Dict:
         help="input json file to initialize the argumentation graph",
         type=argparse.FileType("r"),
     )
-    parser.add_argument(
-        "initial_argument", help="Argument to start the game with", type=str
-    )
     arguments = parser.parse_args(args)
 
     if not arguments.json:
@@ -28,8 +26,8 @@ def parse_arguments(args: List[str]) -> Dict:
 
 
 def run(argument_graph: ArgumentGraph):
-    print(argument_graph.arguments)
-    print(argument_graph.attacks)
+    game = Game(argument_graph)
+    game.play_game()
 
 
 def main(args: List[str]) -> None:
