@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Iterable, List, Optional, Set
+from typing import Dict, Iterable, List, NoReturn, Optional, Set
 
 from argumentation_game.argument import Argument
 from argumentation_game.argument_graph import ArgumentGraph
@@ -46,8 +46,8 @@ class GameMessages(Enum):
 
 class Game:
     argument_graph: ArgumentGraph
-    outputted_arguments: Set[Optional[Argument]]
-    inputted_arguments: Set[Optional[Argument]]
+    outputted_arguments: Set[Argument]
+    inputted_arguments: Set[Argument]
 
     def __init__(self, argument_graph: ArgumentGraph) -> None:
         self.argument_graph = argument_graph
@@ -75,7 +75,7 @@ class Game:
 
     def validate_argument(
         self,
-        argument: Argument,
+        argument: Optional[Argument],
         valid_arguments: Iterable[Argument],
     ) -> None:
         if not argument:
@@ -160,6 +160,6 @@ class Game:
             self.outputted_arguments.add(replied_argument)
             print(GameMessages.PLAYING_NEXT_ROUND.value)
 
-    def end_game(self, msg: str) -> None:
+    def end_game(self, msg: str) -> NoReturn:
         print(msg)
         exit()
