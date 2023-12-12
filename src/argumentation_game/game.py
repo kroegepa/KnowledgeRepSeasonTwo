@@ -32,7 +32,7 @@ class GameMessages(Enum):
     )
 
     END_GAME_NO_ARGS_PROPONENT = (
-        "Game ends because proponent is left with no arguments to use\nOPONENT WINS"
+        "Game ends because proponent is left with no arguments to use\nOPPONENT WINS"
     )
 
     INVALID_ARGUMENT = "ERROR: The argument key provided is not among the possible keys"
@@ -94,7 +94,6 @@ class Game:
                 argument = self.arguments_map.get(int(user_input))
                 self.validate_argument(argument, valid_arguments)
                 self.print_selected_argument(argument)
-                print(GameMessages.PLAYING_NEXT_ROUND.value)
                 return argument
 
             except ValueError:
@@ -143,6 +142,7 @@ class Game:
             self.inputed_arguments.add(selected_argument)
             replied_argument = self.choose_replied_argument(selected_argument)
             self.outputed_arguments.add(replied_argument)
+            print(GameMessages.PLAYING_NEXT_ROUND.value)
 
     def end_game(self, msg: str) -> None:
         print(msg)
