@@ -83,10 +83,7 @@ class Game:
             raise InvalidArgument
         return argument
 
-    def get_argument_from_input(
-        self, vargs: Optional[Iterable[Argument]] = None
-    ) -> Argument:
-        arguments: Iterable[Argument] = vargs if vargs else self.arguments
+    def get_argument_from_input(self, arguments: Iterable[Argument]) -> Argument:
         while True:
             try:
                 user_input = input(GameMessages.CHOOSE_ARGUMENT.value)
@@ -115,17 +112,10 @@ class Game:
             self.end_game(GameMessages.END_GAME_NO_ARGS_OPPONENT.value)
         return arguments
 
-    def choose_initial_argument(self) -> Argument:
-        print(GameMessages.CHOOSE_INITIAL_ARGUMENT.value)
-        self.print_arguments(self.arguments)
-        return self.get_argument_from_input()
-
     def choose_attacking_argument(self) -> Argument:
         print(GameMessages.CHOOSE_ATTACKING_ARGUMENT.value)
         self.print_arguments(self.get_arguments_available_to_opponent())
-        return self.get_argument_from_input(
-            vargs=self.get_arguments_available_to_opponent()
-        )
+        return self.get_argument_from_input(self.get_arguments_available_to_opponent())
 
     def choose_replied_argument(self, argument: Argument) -> Argument:
         attackers = {self.arguments_map[a] for a in argument.attackers}
@@ -136,8 +126,12 @@ class Game:
 
         self.end_game(GameMessages.END_GAME_NO_ARGS_PROPONENT.value)
 
-    def play_game(self) -> None:
-        initial_argument = self.choose_initial_argument()
+    def play_game(self, initial_argument: Argument) -> None:
+        if not initial_argument in self.argument_graph.arguments:
+            self.end_game(f"{initial_argument} is not a argument from the passed graph")
+        self.print_arguments(self.arguments)
+        print(f"Starting game with {initial_argument}\n")
+
         self.outputed_arguments.add(initial_argument)
         while True:
             selected_argument = self.choose_attacking_argument()

@@ -68,7 +68,3 @@ class ArgumentGraph:
             _is_admissable(label, arg)
             for label, arg in zip(labeling, self.arguments, strict=True)
         )
-
-
-def parse_json(json: Dict) -> ArgumentGraph:
-    return ArgumentGraph.from_json(json)
