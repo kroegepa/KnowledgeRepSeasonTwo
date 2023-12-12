@@ -86,7 +86,4 @@ class TestExamples:
         ],
     )
     def test_inadmissable(self, data, node, label):
-        print(self.exampes[data])
-        print(node, label)
-        ret = try_admissability(self.exampes[data], node, label)
-        assert ret is None
+        assert try_admissability(self.exampes[data], node, label) is None

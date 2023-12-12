@@ -53,3 +53,9 @@ def try_admissability(
     initial_labels = [Label.Undecided for _ in argument_graph.arguments]
     initial_labels[argument] = label
     return recursive_boogaloo(argument_graph, initial_labels, argument)
+
+
+def is_in_admissable_labeling(
+    argument_graph: ArgumentGraph, argument: int | Argument, label: Label
+) -> bool:
+    return try_admissability(argument_graph, argument, label) is not None
