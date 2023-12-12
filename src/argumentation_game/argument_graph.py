@@ -8,7 +8,7 @@ AttackRelation = namedtuple("AttackRelation", field_names=["attacker", "attackee
 
 class ArgumentGraph:
     arguments: List[Argument]
-    attack_relations: List[AttackRelation]
+    attack_relations: List[AttackRelation]  # do i actually need this?
     arguments_map: Dict[int, Argument]
 
     def __init__(
