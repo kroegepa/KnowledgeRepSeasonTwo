@@ -35,6 +35,10 @@ class GameMessages:
         "Game ends because proponent is left with no arguments to use\nOPPONENT WINS"
     )
 
+    END_GAME_PROPONENT_CONTRADICTS = (
+        "The selected argument has been used previoulsy by the proponent\nOPPONENT WINS"
+    )
+
     QUIT_GAME = "Quitting game upon user request ..."
 
     INVALID_ARGUMENT = "ERROR: The argument key provided is not among the possible keys"
@@ -64,7 +68,7 @@ class Game:
     def arguments_map(self) -> Dict[int, Argument]:
         return {arg.index: arg for arg in self.argument_graph.arguments}
 
-    def print_arguments(self, arguments: Iterable[Argument]):
+    def print_arguments(self, arguments: Iterable[Argument]) -> None:
         print("\n".join(str(arg) for arg in arguments), "\n")
 
     def print_selected_argument(self, argument: Argument) -> None:
@@ -108,15 +112,19 @@ class Game:
         arguments = set()
         for outputed in self.outputed_arguments:
             arguments |= {self.arguments_map[a] for a in outputed.attackers}
-        arguments -= self.inputed_arguments - self.outputed_arguments
+        arguments -= self.inputed_arguments
         if not arguments:
             self.end_game(GameMessages.END_GAME_NO_ARGS_OPPONENT)
         return arguments
 
     def choose_attacking_argument(self) -> Argument:
         print(GameMessages.CHOOSE_ATTACKING_ARGUMENT)
-        self.print_arguments(self.get_arguments_available_to_opponent())
-        return self.get_argument_from_input(self.get_arguments_available_to_opponent())
+        opponent_available = self.get_arguments_available_to_opponent()
+        self.print_arguments(opponent_available)
+        argument = self.get_argument_from_input(opponent_available)
+        if argument in self.outputed_arguments:
+            self.end_game(GameMessages.END_GAME_PROPONENT_CONTRADICTS)
+        return argument
 
     def choose_replied_argument(self, argument: Argument) -> Argument:
         attackers = {self.arguments_map[a] for a in argument.attackers}
@@ -129,14 +137,17 @@ class Game:
         assert not availabe
         self.end_game(GameMessages.END_GAME_NO_ARGS_PROPONENT)
 
-    def play_game(self, init_argument: Argument) -> NoReturn:
+    def validate_init_argument(self, init_argument: Argument) -> Argument:
         if not init_argument in self.argument_graph.arguments:
             self.end_game(f"{init_argument} is not a argument from the passed graph")
         self.print_arguments(self.arguments)
         print(f"Starting game with {init_argument}\n")
-        self.labeling = try_admissability(self.argument_graph, init_argument, Label.In)
+        return init_argument
 
+    def play_game(self, init_argument: Argument) -> NoReturn:
+        init_argument = self.validate_init_argument(init_argument)
         self.outputed_arguments.add(init_argument)
+        self.labeling = try_admissability(self.argument_graph, init_argument, Label.In)
         while True:
             selected_argument = self.choose_attacking_argument()
             self.inputed_arguments.add(selected_argument)
