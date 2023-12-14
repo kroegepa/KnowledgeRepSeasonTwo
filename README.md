@@ -7,12 +7,12 @@ To run any code, first, install the code as a package. Do this with:
 python -m pip install .
 ```
 
-After this, the game can be run as follows:
+After this, the preferred discussion game can be run as follows:
 ```sh
 python -m argumentation_game [--game/-g] input.json argument
 ```
 
-After this, the credulous decision on the admissibility semantics can be run as follows:
+After this, the credulous decision on the preferred semantics can be run as follows:
 ```sh
 python -m argumentation_game input.json argument
 ```
@@ -24,13 +24,13 @@ To run both as separate executables, in case that is needed for grading, you can
 ./game.sh input.json argument
 
 # Perform the decision process
-./admissable_decision.sh input.json argument
+./credulous_decision_preferred.sh input.json argument
 ```
 This will also run the pip install, in case that wasn't done already.
 
 ---
 
-To run the tests on the admissibility labeler, first install pytest, then do:
+To run the tests on the admissibility labeler (The algorithm doesn't just output if the node is in an admissable / preferred extension, but also an admissable extension in which the node is the given label), first install pytest, then do:
 ```sh
 # Install the package locally to be able to test it
 python -m pip install -e .

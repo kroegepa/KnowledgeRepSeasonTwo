@@ -55,7 +55,8 @@ def try_admissability(
     return recursive_boogaloo(argument_graph, initial_labels, argument)
 
 
-def is_in_admissable_labeling(
+def is_in_preferred_labeling(
     argument_graph: ArgumentGraph, argument: int | Argument
 ) -> bool:
+    # If a single label being IN is in an admissable extension, it is also in a preferred extension.
     return try_admissability(argument_graph, argument, Label.In) is not None

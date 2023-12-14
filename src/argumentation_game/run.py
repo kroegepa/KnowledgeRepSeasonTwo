@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from argumentation_game.argument_graph import Argument, ArgumentGraph
 from argumentation_game.labeling import Label
-from argumentation_game.recursive_shenanigans import is_in_admissable_labeling
+from argumentation_game.recursive_shenanigans import is_in_preferred_labeling
 from argumentation_game.game import Game
 
 
@@ -35,7 +35,7 @@ def parse_arguments(args: List[str]) -> Args:
     )
     parser.add_argument(
         "node",
-        help="The node to start with, or the node to check if it is in an admissable labeling",
+        help="The node to start with, or the node to credulously decide is in a preferred extension",
         type=str,
     )
     arguments = parser.parse_args(args)
@@ -51,7 +51,7 @@ def run_game(argument_graph: ArgumentGraph, node: Argument):
 
 
 def run_semantics(argument_graph: ArgumentGraph, node: Argument):
-    print(is_in_admissable_labeling(argument_graph, node))
+    print(is_in_preferred_labeling(argument_graph, node))
 
 
 # Python, I want monadic exceptions, and I want them now.
