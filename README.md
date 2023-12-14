@@ -39,3 +39,8 @@ python -m pytest tests/
 ```
 
 Part two of these tests perform the same tests as those for part 2 from `NonmonotonicDefaultlogicLec1-1.pdf` in the assignment for our chosen semantics and test if the given nodes being in and out are in an admissible labeling.
+
+To get the performance of these, run with `--durations`:
+```
+python -m pytest --durations=0 tests/test_part_two.py
+```
