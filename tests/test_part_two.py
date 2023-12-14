@@ -36,14 +36,14 @@ class TestAssignmentTwoTwo:
 class TestAssignmentTwoThree:
     data = ArgumentGraph.from_json(load_json(DATA_PATH / "example3.json"))
 
-    def test_two_one(self):
+    def test_three_one(self):
         for _ in range(NR_ITERATIONS):
             assert is_in_admissable_labeling(self.data, 1) is True
 
-    def test_two_two(self):
+    def test_three_two(self):
         for _ in range(NR_ITERATIONS):
             assert is_in_admissable_labeling(self.data, 3) is True
 
-    def test_two_three(self):
+    def test_three_three(self):
         for _ in range(NR_ITERATIONS):
             assert is_in_admissable_labeling(self.data, 4) is False
