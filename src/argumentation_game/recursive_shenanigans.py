@@ -56,6 +56,6 @@ def try_admissability(
 
 
 def is_in_admissable_labeling(
-    argument_graph: ArgumentGraph, argument: int | Argument, label: DecidedLabel
+    argument_graph: ArgumentGraph, argument: int | Argument
 ) -> bool:
-    return try_admissability(argument_graph, argument, label) is not None
+    return try_admissability(argument_graph, argument, Label.In) is not None

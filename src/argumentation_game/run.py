@@ -51,7 +51,7 @@ def run_game(argument_graph: ArgumentGraph, node: Argument):
 
 
 def run_semantics(argument_graph: ArgumentGraph, node: Argument):
-    print(is_in_admissable_labeling(argument_graph, node, Label.In))
+    print(is_in_admissable_labeling(argument_graph, node))
 
 
 # Python, I want monadic exceptions, and I want them now.

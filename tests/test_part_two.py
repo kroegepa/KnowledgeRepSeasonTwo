@@ -10,11 +10,11 @@ class TestAssignmentTwoOne:
 
     def test_one_one(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 0, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 0) is True
 
     def test_one_two(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 5, Label.In) is False
+            assert is_in_admissable_labeling(self.data, 5) is False
 
 
 class TestAssignmentTwoTwo:
@@ -22,15 +22,15 @@ class TestAssignmentTwoTwo:
 
     def test_two_one(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 2, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 2) is True
 
     def test_two_two(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 3, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 3) is True
 
     def test_two_three(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 0, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 0) is True
 
 
 class TestAssignmentTwoThree:
@@ -38,12 +38,12 @@ class TestAssignmentTwoThree:
 
     def test_two_one(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 1, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 1) is True
 
     def test_two_two(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 3, Label.In) is True
+            assert is_in_admissable_labeling(self.data, 3) is True
 
     def test_two_three(self):
         for _ in range(NR_ITERATIONS):
-            assert is_in_admissable_labeling(self.data, 4, Label.In) is False
+            assert is_in_admissable_labeling(self.data, 4) is False
