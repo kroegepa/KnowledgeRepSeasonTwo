@@ -28,19 +28,17 @@ def recursive_boogaloo(
 
     elif labeling[current_node] == Label.Out:
         for attacker in argument_graph.arguments[current_node].attackers:
-            temp_labeling = labeling
-            if labeling[attacker] == Label.Out:
-                temp_labeling = None
-            elif labeling[attacker] == Label.Undecided:
+            if labeling[attacker] == Label.Undecided:
+                temp_labeling = labeling.copy()
                 temp_labeling[attacker] = Label.In
                 temp_labeling = recursive_boogaloo(
                     argument_graph, temp_labeling, attacker
                 )
+                if temp_labeling is not None:
+                    return temp_labeling
             elif labeling[attacker] == Label.In:
                 return labeling
 
-            if temp_labeling is not None:
-                return temp_labeling
     return None
 
 
